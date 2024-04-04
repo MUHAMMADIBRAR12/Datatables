@@ -17,7 +17,7 @@
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
 </head>
 <body>
-         
+       
     <div class="container">
         <h1 class="text-center text-success mt-5 mb-5"><b>Laravel 10 Datatables Date Range Filter</b></h1>
         <div class="card">
@@ -50,21 +50,44 @@
         </div>
     </div>
 </body>
-<script  type="text/javascript">
-    $(function(){
-var table= $('#daterange_table').Datatable({
-    processing:true,
-    serverside : true,
-    ajax : {
-        url:"{{ route('user.index') }}"
-    },
-    colums: [
-        {data:'id', name:'id'},
-        {data:'name', name:'name'},
-        {data:'email', name:'email'},
-        {data:'created_at', name:'created_at'},
-    ]
-});
+<script type="text/javascript">
+
+$(function () {
+
+    var start_date = moment().subtract(1, 'M');
+
+    var end_date = moment();
+
+    $('#daterange span').html(start_date.format('MMMM D, YYYY') + ' - ' + end_date.format('MMMM D, YYYY'));
+
+    $('#daterange').daterangepicker({
+        startDate : start_date,
+        endDate : end_date
+    }, function(start_date, end_date){
+        $('#daterange span').html(start_date.format('MMMM D, YYYY') + ' - ' + end_date.format('MMMM D, YYYY'));
+
+        table.draw();
     });
+
+    var table = $('#daterange_table').DataTable({
+        processing : true,
+        serverSide : true,
+        ajax : {
+            url : "{{ route('user.index') }}",
+            data : function(data){
+                data.from_date = $('#daterange').data('daterangepicker').startDate.format('YYYY-MM-DD');
+                data.to_date = $('#daterange').data('daterangepicker').endDate.format('YYYY-MM-DD');
+            }
+        },
+        columns : [
+            {data : 'id', name : 'id'},
+            {data : 'name', name : 'name'},
+            {data : 'email', name : 'email'},
+            {data : 'created_at', name : 'created_at'}
+        ]
+    });
+
+});
+
 </script>
 </html>

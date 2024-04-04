@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\User;
-use Datatables;
+use Yajra\DataTables\DataTables;
 
 class UserController extends Controller
 {
